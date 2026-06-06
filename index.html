@@ -1,33 +1,178 @@
-HTML
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>BMI Calculator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Health Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .calculator-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 380px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .input-group span {
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        /* Sliders Styling */
+        input[type="range"] {
+            width: 100%;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        /* Categorized Output Box Styling */
+        .output-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+
+        .bmi-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .bmi-status {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Dynamic Classes for Categories */
+        .underweight {
+            background-color: #e3f2fd;
+            border-color: #90caf9;
+            color: #0d47a1;
+        }
+
+        .normal {
+            background-color: #e8f5e9;
+            border-color: #a5d6a7;
+            color: #1b5e20;
+        }
+
+        .overweight {
+            background-color: #fff3e0;
+            border-color: #ffcc80;
+            color: #e65100;
+        }
+
+        .obese {
+            background-color: #ffebee;
+            border-color: #ef9a9a;
+            color: #b71c1c;
+        }
+    </style>
 </head>
 <body>
 
-<h1>BMI Health Calculator</h1>
+<div class="calculator-card">
+    <h1>BMI Health Calculator</h1>
 
-<input type="number" id="height" placeholder="Height in cm">
-<br><br>
+    <div class="input-group">
+        <label>Height: <span id="height-val">160 cm</span></label>
+        <input type="range" id="height" min="100" max="220" value="160" oninput="calculateBMI()">
+    </div>
 
-<input type="number" id="weight" placeholder="Weight in kg">
-<br><br>
+    <div class="input-group">
+        <label>Weight: <span id="weight-val">60 kg</span></label>
+        <input type="range" id="weight" min="30" max="150" value="60" oninput="calculateBMI()">
+    </div>
 
-<button onclick="calculateBMI()">Calculate BMI</button>
-
-<p id="result"></p>
+    <div id="output-screen" class="output-box normal">
+        <div>Your BMI is</div>
+        <div id="bmi-result" class="bmi-value">23.4</div>
+        <div id="bmi-category" class="bmi-status">Normal Weight</div>
+    </div>
+</div>
 
 <script>
 function calculateBMI() {
+    // Sliders nundi real-time values teeskuntundi
     let height = document.getElementById("height").value;
     let weight = document.getElementById("weight").value;
 
-    let bmi = weight / ((height / 100) * (height / 100));
+    // UI meedha select chesina numbers ni ventane update chestundi
+    document.getElementById("height-val").innerHTML = height + " cm";
+    document.getElementById("weight-val").innerHTML = weight + " kg";
 
-    document.getElementById("result").innerHTML =
-        "Your BMI is: " + bmi.toFixed(2);
+    // BMI Formula Calculation
+    let bmi = weight / ((height / 100) * (height / 100));
+    let finalBmi = bmi.toFixed(1); // Point tharwatha oka number varake clear ga chupisthundi
+
+    // Output elements set cheskovali
+    let bmiResult = document.getElementById("bmi-result");
+    let bmiCategory = document.getElementById("bmi-category");
+    let outputScreen = document.getElementById("output-screen");
+
+    // Dynamic value screen meedha print chestundi
+    bmiResult.innerHTML = finalBmi;
+
+    // Categorized Ranges & Color Code Changing Logic
+    outputScreen.className = "output-box"; // Reset old classes
+
+    if (finalBmi < 18.5) {
+        bmiCategory.innerHTML = "Underweight";
+        outputScreen.classList.add("underweight");
+    } else if (finalBmi >= 18.5 && finalBmi <= 24.9) {
+        bmiCategory.innerHTML = "Normal Weight";
+        outputScreen.classList.add("normal");
+    } else if (finalBmi >= 25 && finalBmi <= 29.9) {
+        bmiCategory.innerHTML = "Overweight";
+        outputScreen.classList.add("overweight");
+    } else {
+        bmiCategory.innerHTML = "Obese";
+        outputScreen.classList.add("obese");
+    }
 }
+
+// Page load avvagane initial calculation run avvadaniki
+window.onload = function() {
+    calculateBMI();
+};
 </script>
 
 </body>
